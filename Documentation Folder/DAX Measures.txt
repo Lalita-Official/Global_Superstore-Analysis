@@ -1,0 +1,65 @@
+Total Sales =
+Sum(Global_Superstore[Sales])
+
+Total Profit =
+Sum(Global_Superstore[Profit])
+
+Total Orders = 
+DISTINCTCOUNT(Global_Superstore[Order_ID])
+
+Total Customers = 
+DISTINCTCOUNT(Global_Superstore[Customer_ID])
+
+Profit Margin % =
+DIVIDE([Total Profit],[Total Sales],0)*100
+
+Avg Shipping Days =
+AVERAGE(Global_Superstore[Shipping_Days])
+
+
+Fastest Ship Mode = 
+VAR ShipModeTable =
+    TOPN(
+        1,
+        SUMMARIZE(
+            Global_Superstore,
+            Global_Superstore[Ship_Mode],
+            "AvgDays", AVERAGE(Global_Superstore[Shipping_Days])
+        ),
+        [AvgDays], ASC
+    )
+RETURN
+    MAXX(ShipModeTable, Global_Superstore[Ship_Mode])
+
+
+Most Profitable Customer = 
+VAR TopCustomer =
+    TOPN(
+        1,
+        SUMMARIZE(
+            Global_Superstore,
+            Global_Superstore[Customer_Name],
+            "ProfitAmount", SUM(Global_Superstore[Profit])
+        ),
+        [ProfitAmount], DESC
+    )
+RETURN
+    MAXX(TopCustomer, Global_Superstore[Customer_Name])
+
+
+Most Valuable Customer = 
+VAR TopCustomer =
+    TOPN(
+        1,
+        SUMMARIZE(
+            Global_Superstore,
+            Global_Superstore[Customer_Name],
+            "SalesAmount", SUM(Global_Superstore[Sales])
+        ),
+        [SalesAmount], DESC
+    )
+RETURN
+    MAXX(TopCustomer, Global_Superstore[Customer_Name])
+
+
+
